@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Supply, QuantityOperation } from '../types/inventory';
+import type { Supply, VariantQuantityOperation } from '../types/inventory';
 import inventoryService from '../services/inventoryService';
 
 interface UseInventoryReturn {
@@ -14,8 +14,8 @@ interface UseInventoryReturn {
   setSearchTerm: (term: string) => void;
   setCategoryFilter: (category: string) => void;
   refreshSupplies: () => Promise<void>;
-  addQuantityToSupply: (supplyId: number, operation: QuantityOperation) => Promise<void>;
-  subtractQuantityFromSupply: (supplyId: number, operation: QuantityOperation) => Promise<void>;
+  addQuantityToSupplyVariant: (supplyId: number, colorId: number, quantity: number, notes?: string) => Promise<void>;
+  subtractQuantityFromSupplyVariant: (supplyId: number, colorId: number, quantity: number, notes?: string) => Promise<void>;
   clearMessages: () => void;
 }
 
@@ -46,11 +46,16 @@ export const useInventory = (): UseInventoryReturn => {
     }
   }, []);
 
-  // Función para agregar cantidad
-  const addQuantityToSupply = useCallback(async (supplyId: number, operation: QuantityOperation) => {
+  // Función para agregar cantidad a una variante
+  const addQuantityToSupplyVariant = useCallback(async (supplyId: number, colorId: number, quantity: number, notes?: string) => {
     try {
       setError(null);
-      await inventoryService.addQuantityToSupply(supplyId, operation);
+      const operation: VariantQuantityOperation = {
+        id_supply_color: colorId,
+        quantity,
+        notes
+      };
+      await inventoryService.addQuantityToSupplyVariant(supplyId, operation);
       setSuccessMessage('Cantidad agregada exitosamente');
       await refreshSupplies();
     } catch (err) {
@@ -59,11 +64,16 @@ export const useInventory = (): UseInventoryReturn => {
     }
   }, [refreshSupplies]);
 
-  // Función para restar cantidad
-  const subtractQuantityFromSupply = useCallback(async (supplyId: number, operation: QuantityOperation) => {
+  // Función para restar cantidad de una variante
+  const subtractQuantityFromSupplyVariant = useCallback(async (supplyId: number, colorId: number, quantity: number, notes?: string) => {
     try {
       setError(null);
-      await inventoryService.subtractQuantityFromSupply(supplyId, operation);
+      const operation: VariantQuantityOperation = {
+        id_supply_color: colorId,
+        quantity,
+        notes
+      };
+      await inventoryService.subtractQuantityFromSupplyVariant(supplyId, operation);
       setSuccessMessage('Cantidad restada exitosamente');
       await refreshSupplies();
     } catch (err) {
@@ -119,8 +129,8 @@ export const useInventory = (): UseInventoryReturn => {
     setSearchTerm,
     setCategoryFilter,
     refreshSupplies,
-    addQuantityToSupply,
-    subtractQuantityFromSupply,
+    addQuantityToSupplyVariant,
+    subtractQuantityFromSupplyVariant,
     clearMessages,
   };
 };

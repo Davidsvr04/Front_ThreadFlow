@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import type { QuantityModalData, QuantityOperation } from '../../types/inventory';
+import type { QuantityModalData } from '../../types/inventory';
 import inventoryService from '../../services/inventoryService';
 
 interface QuantityModalProps {
   modalData: QuantityModalData;
   onClose: () => void;
-  onSubmit: (supplyId: number, operation: QuantityOperation) => Promise<void>;
+  onSubmit: (supplyId: number, colorId: number, quantity: number, notes?: string) => Promise<void>;
 }
 
 const QuantityModal: React.FC<QuantityModalProps> = ({
@@ -27,12 +27,10 @@ const QuantityModal: React.FC<QuantityModalProps> = ({
     try {
       setSubmitting(true);
       
-      const operation: QuantityOperation = {
-        quantity: parseFloat(quantity),
-        notes: notes.trim() || undefined,
-      };
+      const quantityValue = parseFloat(quantity);
+      const notesValue = notes.trim() || undefined;
 
-      await onSubmit(modalData.supplyId, operation);
+      await onSubmit(modalData.supplyId, modalData.colorId, quantityValue, notesValue);
       onClose();
     } catch {
       // El error ya se maneja en el hook

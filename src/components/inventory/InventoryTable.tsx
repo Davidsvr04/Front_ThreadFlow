@@ -4,8 +4,8 @@ import { getStockStatusClass, formatStockValue } from '../../utils/inventoryUtil
 
 interface InventoryTableProps {
   supplies: Supply[];
-  onAddQuantity: (supplyId: number, description: string) => void;
-  onSubtractQuantity: (supplyId: number, description: string) => void;
+  onAddQuantity: (supplyId: number, description: string, colorId: number) => void;
+  onSubtractQuantity: (supplyId: number, description: string, colorId: number) => void;
 }
 
 const InventoryTable: React.FC<InventoryTableProps> = ({
@@ -67,14 +67,14 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
                   <div className="action-buttons">
                     <button
                       className="action-button add-button"
-                      onClick={() => onAddQuantity(supply.idSupply, supply.description)}
+                      onClick={() => onAddQuantity(supply.idSupply, supply.description, supply.idSupplyColor)}
                       title="Agregar stock"
                     >
                       + Agregar
                     </button>
                     <button
                       className="action-button subtract-button"
-                      onClick={() => onSubtractQuantity(supply.idSupply, supply.description)}
+                      onClick={() => onSubtractQuantity(supply.idSupply, supply.description, supply.idSupplyColor)}
                       title="Restar stock"
                     >
                       - Restar

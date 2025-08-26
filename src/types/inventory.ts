@@ -1,10 +1,31 @@
-// Estructura de respuesta del backend para supplies
+// Estructura de respuesta del backend para supplies con variantes
 export interface BackendSupplyResponse {
   success: boolean;
   message: string;
-  data: BackendSupply[];
+  data: BackendSupplyWithVariants[];
 }
 
+export interface BackendSupplyWithVariants {
+  id_supply: number;
+  description: string;
+  active: boolean;
+  id_supply_type: number;
+  measuring_uom_id: number;
+  type_name: string;
+  category_name: string;
+  uom_description: string;
+  total_stock: number;
+  variants: BackendSupplyVariant[];
+}
+
+export interface BackendSupplyVariant {
+  id_supply_variant: number;
+  id_supply_color: number;
+  color_name: string;
+  stock_actual: number;
+}
+
+// Mantengo la estructura anterior para compatibilidad con BackendSupply
 export interface BackendSupply {
   id_supply: number;
   description: string;
@@ -66,9 +87,17 @@ export interface QuantityOperation {
   notes?: string;
 }
 
+// Nueva interfaz para operaciones de stock por variante
+export interface VariantQuantityOperation {
+  id_supply_color: number;
+  quantity: number;
+  notes?: string;
+}
+
 export interface QuantityModalData {
   supplyId: number;
   supplyDescription: string;
+  colorId: number;
   action: 'add' | 'subtract';
 }
 

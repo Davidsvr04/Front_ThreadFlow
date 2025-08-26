@@ -4,8 +4,8 @@ import { getStockStatusClass, formatStockValue } from '../../utils/inventoryUtil
 
 interface SupplyCardProps {
   supply: Supply;
-  onAddQuantity: (supplyId: number, description: string) => void;
-  onSubtractQuantity: (supplyId: number, description: string) => void;
+  onAddQuantity: (supplyId: number, description: string, colorId: number) => void;
+  onSubtractQuantity: (supplyId: number, description: string, colorId: number) => void;
 }
 
 const SupplyCard: React.FC<SupplyCardProps> = ({
@@ -56,13 +56,13 @@ const SupplyCard: React.FC<SupplyCardProps> = ({
         <div className="supply-actions">
           <button
             className="action-button add-button"
-            onClick={() => onAddQuantity(supply.idSupply, supply.description)}
+            onClick={() => onAddQuantity(supply.idSupply, supply.description, supply.idSupplyColor)}
           >
             + Agregar
           </button>
           <button
             className="action-button subtract-button"
-            onClick={() => onSubtractQuantity(supply.idSupply, supply.description)}
+            onClick={() => onSubtractQuantity(supply.idSupply, supply.description, supply.idSupplyColor)}
           >
             - Restar
           </button>

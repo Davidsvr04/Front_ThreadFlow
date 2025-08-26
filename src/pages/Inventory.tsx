@@ -23,15 +23,15 @@ const Inventory: React.FC = () => {
     setSearchTerm,
     setCategoryFilter,
     refreshSupplies,
-    addQuantityToSupply,
-    subtractQuantityFromSupply,
+    addQuantityToSupplyVariant,
+    subtractQuantityFromSupplyVariant,
   } = useInventory();
 
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState<QuantityModalData | null>(null);
 
-  const openQuantityModal = (supplyId: number, supplyDescription: string, action: 'add' | 'subtract') => {
-    setModalData({ supplyId, supplyDescription, action });
+  const openQuantityModal = (supplyId: number, supplyDescription: string, colorId: number, action: 'add' | 'subtract') => {
+    setModalData({ supplyId, supplyDescription, colorId, action });
     setShowModal(true);
   };
 
@@ -40,13 +40,13 @@ const Inventory: React.FC = () => {
     setModalData(null);
   };
 
-  const handleQuantityOperation = async (supplyId: number, operation: { quantity: number; notes?: string }) => {
+  const handleQuantityOperation = async (supplyId: number, colorId: number, quantity: number, notes?: string) => {
     if (!modalData) return;
 
     if (modalData.action === 'add') {
-      await addQuantityToSupply(supplyId, operation);
+      await addQuantityToSupplyVariant(supplyId, colorId, quantity, notes);
     } else {
-      await subtractQuantityFromSupply(supplyId, operation);
+      await subtractQuantityFromSupplyVariant(supplyId, colorId, quantity, notes);
     }
   };
 
@@ -104,8 +104,8 @@ const Inventory: React.FC = () => {
       ) : (
         <InventoryTable
           supplies={filteredSupplies}
-          onAddQuantity={(id, description) => openQuantityModal(id, description, 'add')}
-          onSubtractQuantity={(id, description) => openQuantityModal(id, description, 'subtract')}
+          onAddQuantity={(id, description, colorId) => openQuantityModal(id, description, colorId, 'add')}
+          onSubtractQuantity={(id, description, colorId) => openQuantityModal(id, description, colorId, 'subtract')}
         />
       )}
 

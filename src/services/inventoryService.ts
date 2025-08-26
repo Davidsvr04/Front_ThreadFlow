@@ -1,11 +1,13 @@
 import type { 
   Supply, 
-  QuantityOperation, 
+  VariantQuantityOperation,
   SupplyMovement, 
   CreateSupplyData, 
   UpdateSupplyData,
   BackendSupplyResponse,
   BackendSupply,
+  BackendSupplyWithVariants,
+  BackendSupplyVariant,
   ApiResponse,
   StockResponse
 } from '../types/inventory';
@@ -45,6 +47,41 @@ function transformBackendSupplyToSupply(backendSupply: BackendSupply): Supply {
       stockActual: backendSupply.stock_actual.toString()
     }
   };
+}
+
+// Nueva función para transformar variantes en supplies individuales
+function transformVariantsToSupplies(backendSupplyWithVariants: BackendSupplyWithVariants): Supply[] {
+  return backendSupplyWithVariants.variants.map((variant: BackendSupplyVariant): Supply => ({
+    idSupply: backendSupplyWithVariants.id_supply,
+    description: `${backendSupplyWithVariants.description} - ${variant.color_name}`,
+    active: backendSupplyWithVariants.active,
+    idSupplyColor: variant.id_supply_color,
+    idSupplyType: backendSupplyWithVariants.id_supply_type,
+    measuringUomId: backendSupplyWithVariants.measuring_uom_id,
+    supplyColor: {
+      idSupplyColor: variant.id_supply_color,
+      name: variant.color_name
+    },
+    supplyType: {
+      idSupplyType: backendSupplyWithVariants.id_supply_type,
+      name: backendSupplyWithVariants.type_name,
+      idSupplyCategory: 1, // Valor por defecto
+      supplyCategory: {
+        idSupplyCategory: 1,
+        name: backendSupplyWithVariants.category_name,
+        active: true
+      }
+    },
+    unitOfMeasure: {
+      idUom: backendSupplyWithVariants.measuring_uom_id,
+      code: backendSupplyWithVariants.uom_description.substring(0, 3).toUpperCase(),
+      description: backendSupplyWithVariants.uom_description
+    },
+    stock: {
+      idSupply: variant.id_supply_variant, // Usamos el ID de la variante para el stock
+      stockActual: variant.stock_actual.toString()
+    }
+  }));
 }
 
 class InventoryService {
@@ -88,7 +125,14 @@ class InventoryService {
       }
       
       // Transformar los datos del backend al formato del frontend
-      return rawData.data.map(transformBackendSupplyToSupply);
+      // Cada supply con variantes se convierte en múltiples supplies individuales
+      const allSupplies: Supply[] = [];
+      rawData.data.forEach((supplyWithVariants: BackendSupplyWithVariants) => {
+        const variantSupplies = transformVariantsToSupplies(supplyWithVariants);
+        allSupplies.push(...variantSupplies);
+      });
+      
+      return allSupplies;
     } catch (error) {
       console.error('Error fetching supplies:', error);
       throw error;
@@ -96,11 +140,11 @@ class InventoryService {
   }
 
   /**
-   * Agrega cantidad a un suministro específico
+   * Agrega cantidad a una variante específica de un suministro
    */
-  async addQuantityToSupply(supplyId: number, operation: QuantityOperation): Promise<void> {
+  async addQuantityToSupplyVariant(supplyId: number, operation: VariantQuantityOperation): Promise<void> {
     try {
-      const response = await fetch(`${BASE_URL}/supplies/${supplyId}/stock/add`, {
+      const response = await fetch(`${BASE_URL}/supplies/${supplyId}/variants/add-stock`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,17 +159,17 @@ class InventoryService {
         );
       }
     } catch (error) {
-      console.error('Error adding quantity to supply:', error);
+      console.error('Error adding quantity to supply variant:', error);
       throw error;
     }
   }
 
   /**
-   * Resta cantidad de un suministro específico
+   * Resta cantidad de una variante específica de un suministro
    */
-  async subtractQuantityFromSupply(supplyId: number, operation: QuantityOperation): Promise<void> {
+  async subtractQuantityFromSupplyVariant(supplyId: number, operation: VariantQuantityOperation): Promise<void> {
     try {
-      const response = await fetch(`${BASE_URL}/supplies/${supplyId}/stock/subtract`, {
+      const response = await fetch(`${BASE_URL}/supplies/${supplyId}/variants/subtract-stock`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -140,7 +184,7 @@ class InventoryService {
         );
       }
     } catch (error) {
-      console.error('Error subtracting quantity from supply:', error);
+      console.error('Error subtracting quantity from supply variant:', error);
       throw error;
     }
   }
