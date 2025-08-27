@@ -65,7 +65,7 @@ const Inventory: React.FC = () => {
       <header className="inventory-header">
         <h1 className="inventory-title">Sistema de Inventario</h1>
         <Link to="/" className="back-button">
-          ← Volver al Home
+          Volver al Home
         </Link>
       </header>
 

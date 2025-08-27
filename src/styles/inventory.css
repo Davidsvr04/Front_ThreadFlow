@@ -26,17 +26,31 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: #6c7b7f;
-  color: white;
+  background: white;
+  color: #de3d86;
   text-decoration: none;
   border-radius: 8px;
   font-weight: 500;
+  font-size: 14px;
+  border: 2px solid #de3d86;
   transition: all 0.3s ease;
 }
 
 .back-button:hover {
-  background: #5a6367;
-  transform: translateY(-2px);
+  background: #f8f9ff;
+  color: #9e1251;
+  border-color: #9e1251;
+  transform: translateY(-1px);
+}
+
+.back-button:active {
+  transform: translateY(0);
+  background: #f0f2ff;
+}
+
+.back-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
 }
 
 .inventory-controls {
@@ -122,7 +136,7 @@
 }
 
 .inventory-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ed4a93 0%, #9e1251 100%);
   color: white;
 }
 
@@ -307,6 +321,26 @@
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Estilos para iconos en botones */
+.action-button i,
+.refresh-button i {
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+.refresh-button i {
+  animation: none;
+  transition: transform 0.3s ease;
+}
+
+.refresh-button:hover i {
+  transform: rotate(180deg);
+}
+
+.refresh-button:disabled i {
+  animation: spin 1s linear infinite;
 }
 
 /* Estados de carga y mensajes */

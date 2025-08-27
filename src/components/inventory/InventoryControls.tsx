@@ -47,7 +47,7 @@ const InventoryControls: React.FC<InventoryControlsProps> = ({
         onClick={onRefresh}
         disabled={loading}
       >
-        🔄 Actualizar
+        <i className="fas fa-sync-alt"></i> Actualizar
       </button>
     </div>
   );

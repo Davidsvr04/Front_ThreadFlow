@@ -37,7 +37,7 @@ const Home = () => {
 
       <footer className="footer">
         <div className="developer-info">
-          Desarrollado por Davidsvr04
+          Desarrollado por David Viloria y Victor David
         </div>
       </footer>
     </div>

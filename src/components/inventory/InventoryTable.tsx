@@ -70,14 +70,14 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
                       onClick={() => onAddQuantity(supply.idSupply, supply.description, supply.idSupplyColor)}
                       title="Agregar stock"
                     >
-                      + Agregar
+                      <i className="fas fa-plus"></i> Agregar
                     </button>
                     <button
                       className="action-button subtract-button"
                       onClick={() => onSubtractQuantity(supply.idSupply, supply.description, supply.idSupplyColor)}
                       title="Restar stock"
                     >
-                      - Restar
+                      <i className="fas fa-minus"></i> Restar
                     </button>
                   </div>
                 ) : (
